@@ -1,0 +1,687 @@
+<!--
+  LLM-Wiki · Атлас базы знаний управления эмиссии биржевых облигаций.
+  Демонстрационная выборка из папки «Разъяснения ЦБ».
+  В карту попадают только роль документа/концепта и file:/// ссылка —
+  содержимое документов не отображается и не передаётся (требование ИБ).
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LLM-Wiki · Эмиссия биржевых облигаций</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  :root{
+    --bg-0:#0b1030;--bg-1:#11173d;--panel:#161d49;--panel-2:#1b2356;--hair:#2c356e;
+    --ink:#ece6d6;--ink-dim:#9aa2d4;--ink-faint:#646ca6;
+    --brass:#e8b04b;--brass-soft:#f0c878;--mint:#58e3c6;--coral:#e2725b;
+    --star:#cdd6ff;--line:#3a4488;--radius:14px;--shadow:0 18px 50px -22px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:
+      radial-gradient(1200px 700px at 78% -8%, rgba(88,227,198,.06), transparent 60%),
+      radial-gradient(900px 600px at 8% 110%, rgba(232,176,75,.07), transparent 55%),
+      linear-gradient(160deg, var(--bg-0), var(--bg-1) 70%, #0a0e2a);
+    color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100%;
+  }
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(to right,rgba(120,130,200,.045) 1px,transparent 1px),linear-gradient(to bottom,rgba(120,130,200,.045) 1px,transparent 1px);
+    background-size:44px 44px;mask-image:radial-gradient(120% 120% at 50% 40%,#000 55%,transparent 100%);}
+  .wrap{max-width:1240px;margin:0 auto;padding:30px 24px 56px;position:relative}
+
+  header{margin-bottom:22px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-soft);display:flex;align-items:center;gap:12px}
+  .eyebrow::after{content:"";height:1px;flex:1;background:linear-gradient(to right,var(--hair),transparent)}
+  h1{font-family:"Spectral",Georgia,serif;font-weight:500;font-size:clamp(27px,4.2vw,44px);line-height:1.05;margin:.42em 0 .1em;letter-spacing:-.01em}
+  h1 em{font-style:italic;color:var(--brass)}
+  .sub{color:var(--ink-dim);max-width:64ch;font-size:15px;line-height:1.55;margin:0}
+
+  .askrow{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+  .askfield{flex:1;min-width:260px;display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--hair);border-radius:12px;padding:0 14px;transition:border-color .2s,box-shadow .2s}
+  .askfield:focus-within{border-color:var(--brass);box-shadow:0 0 0 3px rgba(232,176,75,.14)}
+  .askfield svg{flex:none;color:var(--ink-faint)}
+  .askfield input{flex:1;background:none;border:0;outline:0;color:var(--ink);font-family:inherit;font-size:15.5px;padding:14px 0}
+  .askfield input::placeholder{color:var(--ink-faint)}
+  .btn{font-family:"IBM Plex Sans",sans-serif;font-weight:600;font-size:14px;border:0;border-radius:12px;padding:0 20px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;transition:transform .12s,filter .2s}
+  .btn-primary{background:linear-gradient(180deg,var(--brass-soft),var(--brass));color:#3a2400}
+  .btn-primary:hover{filter:brightness(1.06)}.btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:transparent;color:var(--ink-dim);border:1px solid var(--hair)}
+  .btn-ghost:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .chips{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap;align-items:center}
+  .chips .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);letter-spacing:.04em;margin-right:2px}
+  .chip{font-size:13px;color:var(--ink-dim);background:rgba(255,255,255,.025);border:1px solid var(--hair);border-radius:999px;padding:7px 14px;cursor:pointer;transition:all .18s;font-family:inherit}
+  .chip:hover{color:var(--ink);border-color:var(--brass);background:rgba(232,176,75,.07)}
+  .chip.on{color:#3a2400;background:linear-gradient(180deg,var(--brass-soft),var(--brass));border-color:transparent;font-weight:600}
+
+  .stage{display:grid;grid-template-columns:1fr 384px;gap:18px;margin-top:24px;align-items:stretch}
+  .card{background:linear-gradient(180deg,var(--panel),var(--bg-1));border:1px solid var(--hair);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .chartcard{position:relative;overflow:hidden;min-height:580px}
+  .chart-head{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:flex-start;padding:14px 16px;pointer-events:none}
+  .chart-title{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+  .counter{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-dim);background:rgba(11,16,48,.6);border:1px solid var(--hair);border-radius:8px;padding:6px 10px;backdrop-filter:blur(6px);opacity:0;transition:opacity .3s;text-align:right;line-height:1.5}
+  .counter.show{opacity:1}.counter b{color:var(--mint);font-weight:500}.counter .rel{color:var(--brass-soft)}
+  svg.atlas{display:block;width:100%;height:100%;min-height:580px;touch-action:none}
+
+  .region{opacity:.55}
+  .regionlabel{font-family:"Spectral",serif;font-style:italic;fill:var(--ink-faint);font-size:13.5px;letter-spacing:.03em;text-anchor:middle;pointer-events:none}
+
+  .edge{fill:none;stroke:var(--line);stroke-width:1.1;opacity:.32;transition:stroke .4s,opacity .4s,stroke-width .4s}
+  .edge.contra{stroke:var(--coral);stroke-dasharray:2 5;opacity:.5}
+  .edge.dim{opacity:.07}
+  .edge.route{stroke:var(--brass);stroke-width:2.1;opacity:.95}
+  .edge.newlink{stroke:var(--mint);stroke-width:1.7;opacity:.9;stroke-dasharray:4 4}
+
+  .node{cursor:pointer}
+  .node .halo{fill:var(--star);opacity:0;transition:opacity .45s,r .45s}
+  .node .core{transition:fill .4s,r .35s,stroke .3s}
+  .node .ring{fill:none;stroke:var(--brass);stroke-width:1.6;opacity:0;transition:opacity .4s}
+  .node .stalering{fill:none;stroke:var(--ink-faint);stroke-width:1;stroke-dasharray:2 3;opacity:0;transition:opacity .4s}
+  .node text{font-family:"IBM Plex Sans",sans-serif;font-size:11px;fill:var(--ink-dim);text-anchor:middle;pointer-events:none;transition:fill .4s,opacity .4s;paint-order:stroke;stroke:rgba(11,16,48,.85);stroke-width:3px}
+  .node.dim{opacity:.85}.node.dim text{opacity:.26}
+  .node.relevant text{fill:var(--ink)}
+  .node.selected .core{stroke:var(--brass);stroke-width:2.4}
+  .node.selected text{fill:var(--brass-soft);font-weight:600}
+  .node.routenode .core{stroke:var(--brass-soft);stroke-width:2}
+  @keyframes twinkle{0%,100%{opacity:.85}50%{opacity:.4}}
+  .node .twk{animation:twinkle 3.6s ease-in-out infinite}
+  @keyframes ringpulse{from{transform:scale(.4);opacity:.55}to{transform:scale(1.9);opacity:0}}
+  .pulse{transform-origin:center;transform-box:fill-box;animation:ringpulse 1.1s ease-out forwards;fill:none;stroke:var(--brass);stroke-width:1.4;pointer-events:none}
+
+  .legend{position:absolute;left:16px;bottom:14px;z-index:3;display:flex;gap:15px;flex-wrap:wrap;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-faint);background:rgba(11,16,48,.5);border:1px solid var(--hair);border-radius:9px;padding:8px 12px;backdrop-filter:blur(6px)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}.dot{width:9px;height:9px;border-radius:50%}
+
+  .panel{padding:20px 20px 22px;display:flex;flex-direction:column;min-height:580px}
+  .panel-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
+  .intro h3{font-family:"Spectral",serif;font-weight:500;font-size:21px;margin:0 0 10px}
+  .intro p{color:var(--ink-dim);font-size:14px;line-height:1.6;margin:0 0 14px}
+  .howto{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-direction:column;gap:11px}
+  .howto li{display:flex;gap:11px;font-size:13.5px;color:var(--ink-dim);line-height:1.45}
+  .howto .n{font-family:"IBM Plex Mono",monospace;color:var(--brass);flex:none;width:18px}
+
+  .qhead{font-family:"Spectral",serif;font-style:italic;font-size:17px;color:var(--ink);line-height:1.32;margin:0 0 4px}
+  .qmeta{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);margin-bottom:16px}
+  .pathlist{display:flex;flex-direction:column;gap:12px;overflow:auto;margin:-4px -4px 0;padding:4px}
+  .path{border:1px solid var(--hair);border-radius:11px;padding:13px 14px;cursor:pointer;background:rgba(255,255,255,.012);transition:all .2s}
+  .path:hover,.path.active{border-color:var(--brass);background:rgba(232,176,75,.06)}
+  .path .ptitle{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14px;margin-bottom:7px}
+  .path .ptag{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#3a2400;background:var(--brass);border-radius:5px;padding:2px 7px;font-weight:600}
+  .path .why{font-size:12.5px;color:var(--ink-dim);line-height:1.5;margin-bottom:10px}
+  .route{display:flex;align-items:center;flex-wrap:wrap;gap:5px 4px;font-size:11.5px}
+  .route .step{color:var(--ink);background:var(--panel-2);border:1px solid var(--hair);border-radius:6px;padding:4px 8px;cursor:pointer;transition:all .15s}
+  .route .step:hover{border-color:var(--brass);color:var(--brass-soft)}
+  .route .arrow{color:var(--brass);opacity:.7;font-family:"IBM Plex Mono",monospace}
+
+  .typebadge{display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);border:1px solid var(--hair);border-radius:999px;padding:5px 11px;margin-bottom:13px}
+  .detail h3{font-family:"Spectral",serif;font-weight:500;font-size:23px;margin:0 0 4px;line-height:1.16}
+  .block{margin-top:18px}
+  .block .h{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-soft);margin-bottom:8px}
+  .block p{margin:0;font-size:14px;line-height:1.6;color:var(--ink)}
+  .block p.why-ctx{color:var(--ink);border-left:2px solid var(--brass);padding-left:12px}
+  .meter{height:7px;border-radius:99px;background:var(--panel-2);overflow:hidden;border:1px solid var(--hair)}
+  .meter i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--brass),var(--mint));transition:width .6s}
+  .meterrow{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-dim);margin-top:7px}
+  .links{display:flex;flex-direction:column;gap:7px}
+  .lnk{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-dim);cursor:pointer;padding:5px 7px;border-radius:8px;transition:background .15s,color .15s}
+  .lnk:hover{background:rgba(255,255,255,.03);color:var(--ink)}
+  .lnk .rel{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-faint);flex:none}
+  .lnk .nm{flex:1}.lnk.isnew .nm{color:var(--mint)}
+  .lnk .new{font-family:"IBM Plex Mono",monospace;font-size:9px;color:#062b24;background:var(--mint);border-radius:4px;padding:1px 5px;font-weight:600}
+  .lnk.iscontra .nm{color:var(--coral)}
+  .source{margin-top:auto;padding-top:18px}
+  .filebtn{width:100%;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;background:var(--panel-2);border:1px solid var(--hair);border-radius:11px;padding:12px 13px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink);transition:border-color .2s}
+  .filebtn:hover{border-color:var(--brass)}.filebtn .ic{color:var(--brass);flex:none}
+  .filebtn .path{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .filenote{font-size:11px;color:var(--ink-faint);margin-top:9px;line-height:1.5;display:flex;gap:7px}
+  .filenote svg{flex:none;margin-top:1px;color:var(--ink-faint)}.copied{color:var(--mint)}
+  .backbtn{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-dim);background:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:0;margin-bottom:12px}
+  .backbtn:hover{color:var(--brass)}
+  footer{margin-top:24px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);line-height:1.7}
+  footer b{color:var(--ink-dim);font-weight:500}
+
+  @media (max-width:880px){.stage{grid-template-columns:1fr}.panel,.chartcard,svg.atlas{min-height:auto}svg.atlas{height:460px}.panel{min-height:380px}}
+  @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}.pulse{display:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">LLM-WIKI · управление эмиссии биржевых облигаций</div>
+    <h1>База знаний по эмиссии.<br>Спросите — <em>проложу маршрут</em> к ответу.</h1>
+    <p class="sub">Карта разъяснений ЦБ и Биржи: документы и правовые концепты со связями. Задайте вопрос — релевантные страницы загорятся по актуальности, а к ответу прочертятся разные пути. Содержимое документов не раскрывается: только их роль и ссылка <span style="font-family:'IBM Plex Mono',monospace">file:///</span>.</p>
+    <div class="askrow">
+      <label class="askfield">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="text" placeholder="Например: нужно ли вносить изменения в ЭД из-за 210-ФЗ?" autocomplete="off">
+      </label>
+      <button class="btn btn-primary" id="ask">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="5"/></svg>
+        Проложить маршрут
+      </button>
+      <button class="btn btn-ghost" id="reset">Сбросить</button>
+    </div>
+    <div class="chips" id="chips"><span class="lbl">частые вопросы:</span></div>
+  </header>
+
+  <div class="stage">
+    <div class="card chartcard">
+      <div class="chart-head">
+        <div class="chart-title">index.md — карта базы знаний</div>
+        <div class="counter" id="counter"></div>
+      </div>
+      <svg class="atlas" id="atlas" viewBox="0 0 940 680" preserveAspectRatio="xMidYMid meet" aria-label="Карта знаний"></svg>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--star)"></i>страница</span>
+        <span><i class="dot" style="background:var(--brass)"></i>в маршруте</span>
+        <span><i class="dot" style="background:var(--mint)"></i>новая связь</span>
+        <span><i class="dot" style="background:var(--coral)"></i>противоречие</span>
+        <span>яркость = актуальность</span>
+      </div>
+    </div>
+    <div class="card panel" id="panel"></div>
+  </div>
+
+  <footer>
+    <b>Слои.</b> raw (исходники-истина, file:///) → wiki (скомпилированные страницы со связями) → schema (правила агента). Операции: ingest · query · lint.<br>
+    Демонстрационная выборка из папки «Разъяснения ЦБ»: подпапки «1102 для кредитных в КС», «2014 массовое внесение изменений», «Аудиторы и АЗ». Полная база — порядка 500 файлов.
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* ===================== БАЗА ЗНАНИЙ (демо-выборка) ===================== */
+const ROOT="file:///vault/raw/Разъяснения_ЦБ";
+const NODES=[
+  /* --- концепты / акты: 1102 и котировальные списки --- */
+  {id:"1102",label:"Постановление 1102",type:"акт",fresh:.85,folder:"f1102",file:"file:///vault/wiki/akty/postanovlenie-1102.md",desc:"Постановление Правительства РФ от 04.07.2023 № 1102 об особенностях раскрытия информации по 208-ФЗ и 39-ФЗ. Даёт право на изъятия, но не на полное нераскрытие."},
+  {id:"534p",label:"Положение 534-П",type:"акт",fresh:.55,folder:"f1102",file:"file:///vault/wiki/akty/polozhenie-534p.md",desc:"Положение Банка России от 24.02.2016 № 534-П о допуске ценных бумаг к организованным торгам; задаёт условия включения в котировальные списки."},
+  {id:"ks",label:"Котировальные списки",type:"концепт",fresh:.7,folder:"f1102",file:"file:///vault/wiki/koncepty/kotirovalnye-spiski.md",desc:"Уровни листинга. Включение требует раскрытия консолидированной отчётности с приложением аудиторского заключения."},
+  {id:"konsotch",label:"Консолид. отчётность",type:"концепт",fresh:.7,folder:"f1102",file:"file:///vault/wiki/koncepty/konsolidirovannaya-otchetnost.md",desc:"Раскрытие консолидированной финансовой отчётности — обязательное условие листинга; при её отсутствии — индивидуальной."},
+  {id:"reshenie2022",label:"Решение СД ЦБ 29.12.2022",type:"акт",fresh:.75,folder:"f1102",file:"file:///vault/wiki/akty/reshenie-sd-29-12-2022.md",desc:"Решение Совета директоров Банка России о требованиях к раскрытию кредитными организациями отчётности в 2023; допускает изъятия (приложение 2)."},
+  {id:"ko",label:"Кредитные организации",type:"концепт",fresh:.6,folder:"f1102",file:"file:///vault/wiki/koncepty/kreditnye-organizacii.md",desc:"Эмитенты-банки. В 2022-2023 действовал особый режим, позволяющий не раскрывать ряд сведений отчётности."},
+  {id:"az",label:"Аудиторское заключение",type:"концепт",fresh:.65,folder:"faz",file:"file:///vault/wiki/koncepty/auditorskoe-zaklyuchenie.md",desc:"Подтверждает достоверность отчётности. Без аудиторского заключения отчётность не считается раскрытой для целей листинга."},
+
+  /* --- концепты / акты: 210-ФЗ и 2014 --- */
+  {id:"210fz",label:"210-ФЗ",type:"акт",fresh:.5,folder:"f2014",file:"file:///vault/wiki/akty/fz-210.md",desc:"Федеральный закон от 23.07.2013 № 210-ФЗ; вступил в силу 01.07.2014; внёс в Закон о РЦБ статьи 17.1 и 17.2."},
+  {id:"39fz",label:"39-ФЗ (РЦБ)",type:"акт",fresh:.55,folder:"f2014",file:"file:///vault/wiki/akty/fz-39.md",desc:"Федеральный закон «О рынке ценных бумаг» от 22.04.1996 № 39-ФЗ — базовый закон рынка."},
+  {id:"st171",label:"Статья 17.1",type:"норма",fresh:.5,folder:"f2014",file:"file:///vault/wiki/normy/st-17-1.md",desc:"Основания и порядок досрочного погашения облигаций — по требованию владельцев и в силу закона."},
+  {id:"st172",label:"Статья 17.2",type:"норма",fresh:.5,folder:"f2014",file:"file:///vault/wiki/normy/st-17-2.md",desc:"Порядок приобретения облигаций их эмитентом."},
+  {id:"dosrpogash",label:"Досрочное погашение",type:"концепт",fresh:.55,folder:"f2014",file:"file:///vault/wiki/koncepty/dosrochnoe-pogashenie.md",desc:"Различают погашение по ковенантам и в силу закона; последнее применяется независимо от указания в эмиссионных документах."},
+  {id:"emisdoc",label:"Эмиссионные документы",type:"концепт",fresh:.5,folder:"f2014",file:"file:///vault/wiki/koncepty/emissionnye-dokumenty.md",desc:"Решение о выпуске и проспект облигаций; описывают объём прав владельцев."},
+  {id:"vnesizm",label:"Внесение изменений в ЭД",type:"концепт",fresh:.45,folder:"f2014",file:"file:///vault/wiki/koncepty/vnesenie-izmeneniy.md",desc:"Для облигаций, размещённых до 01.07.2014, изменения в части погашения в силу закона не требуются."},
+  {id:"ogovorka",label:"Оговорка об изм. закона",type:"концепт",fresh:.5,folder:"f2014",file:"file:///vault/wiki/koncepty/ogovorka.md",desc:"Условие «порядок применяется с учётом изменений законодательства» обеспечивает соответствие статьям 17.1/17.2."},
+  {id:"predstavitel",label:"Представитель владельцев",type:"концепт",fresh:.45,folder:"f2014",file:"file:///vault/wiki/koncepty/predstavitel-vladelcev.md",desc:"Институт представителя владельцев облигаций, введённый 210-ФЗ."},
+  {id:"gk",label:"ГК РФ (816, 421, 422)",type:"акт",fresh:.35,folder:"f2014",file:"file:///vault/wiki/akty/gk-rf.md",desc:"Момент заключения договора облигационного займа и применение императивных норм во времени."},
+  {id:"st26",label:"Статья 26 39-ФЗ",type:"норма",fresh:.45,folder:"f2014",file:"file:///vault/wiki/normy/st-26.md",desc:"Основания признания выпуска ценных бумаг несостоявшимся."},
+  {id:"nesost",label:"Несостоявшийся выпуск",type:"концепт",fresh:.45,folder:"f2014",file:"file:///vault/wiki/koncepty/nesostoyavshiysya-vypusk.md",desc:"Признание выпуска биржевых облигаций несостоявшимся — основания и стадии эмиссии."},
+  {id:"standemis",label:"Стандарты эмиссии 7.9.4.6",type:"акт",fresh:.4,folder:"f2014",file:"file:///vault/wiki/akty/standarty-emissii.md",desc:"Приказ ФСФР от 04.07.2013 № 13-55/пз-н; пункт 7.9.4.6 о признании выпуска несостоявшимся."},
+
+  /* --- документы (file:///), 1102 --- */
+  {id:"doc_zapros1102",label:"Запрос Биржи · 1102→КО",type:"запрос",fresh:.85,folder:"f1102",file:ROOT+"/1102_для_кредитных_в_КС/Запрос_применение_1102_к_КО_25_08_2023.pdf",desc:"Биржа → ЦБ, 25.08.2023 № МБ-И-2023-4290. Просит подтвердить, что бумаги КО, полностью не раскрывших отчётность по 1102, нельзя включать в котировальные списки."},
+  {id:"doc_otvet5273",label:"Ответ ЦБ · включение в КС",type:"ответ",fresh:.85,folder:"f1102",file:ROOT+"/1102_для_кредитных_в_КС/Ответ_ЦБ_включение_в_КС_28-3-3-5273.pdf",desc:"ЦБ → Бирже, 19.09.2023 № 28-3-3/5273. Включать бумаги КО в КС только при раскрытии консолидированной отчётности с АЗ, кроме сведений по решению СД ЦБ от 29.12.2022."},
+  {id:"doc_otvet6469",label:"Ответ ЦБ · нераскрытие",type:"ответ",fresh:.8,folder:"f1102",file:ROOT+"/1102_для_кредитных_в_КС/Ответ_нераскрытие_отчетности_МБ-ВХ-2023-10526.pdf",desc:"ЦБ → Бирже, 13.11.2023 № 28-4-2/6469. Право не раскрывать информацию в полном объёме Постановлением 1102 не установлено."},
+  {id:"doc_vizual",label:"Визуализация ЭД",type:"схема",fresh:.6,folder:"f1102",file:ROOT+"/1102_для_кредитных_в_КС/Визуализация_ЭД_2023-09-19.pdf",desc:"Схема структуры эмиссионных документов — визуальная карта для разбора кейсов."},
+
+  /* --- документы (file:///), 2014 --- */
+  {id:"doc_zaprossber",label:"Обращение Сбербанк КИБ",type:"запрос",fresh:.4,folder:"f2014",file:ROOT+"/2014_внесение_изменений/Обращение_Сбербанк_КИБ_27_01_2014.pdf",desc:"Сбербанк КИБ → Служба ЦБ по фин. рынкам, 27.01.2014. Правомерность выводов о размещении после 01.07.2014 и вопросы по Стандартам эмиссии 7.9.4.6."},
+  {id:"doc_otvet6635",label:"Ответ Службы ЦБ · РЦБ",type:"ответ",fresh:.4,folder:"f2014",file:ROOT+"/2014_внесение_изменений/Ответ_ЦБ_по_закону_РЦБ_50-03-6635.pdf",desc:"Служба ЦБ по фин. рынкам, 27.02.2014 № 50-03/6635. Оговорка об изменениях закона обеспечивает соответствие ст.17.1/17.2; основания признания выпуска несостоявшимся."},
+  {id:"doc_zapros622",label:"Запрос Биржи · 210-ФЗ",type:"запрос",fresh:.5,folder:"f2014",file:ROOT+"/2014_внесение_изменений/31-14_622_Запрос_внесение_изменений_210-ФЗ.pdf",desc:"ФБ ММВБ → ЦБ, 06.06.2014 № 31-14/622. Пять вопросов о необходимости внесения изменений в эмиссионные документы по 210-ФЗ."},
+  {id:"doc_otvet4299",label:"Ответ ЦБ · изменения в ЭД",type:"ответ",fresh:.5,folder:"f2014",file:ROOT+"/2014_внесение_изменений/31-14_622_Ответ_ЦБ_52-5-4299.pdf",desc:"ЦБ → ФБ ММВБ, 26.06.2014 № 52-5/4299. Для облигаций, размещённых до 01.07.2014, изменения в части досрочного погашения в силу закона не требуются."},
+  {id:"doc_uved_soyuz",label:"Уведомление АКБ «СОЮЗ»",type:"уведомление",fresh:.45,folder:"f2014",file:ROOT+"/2014_внесение_изменений/Уведомление_АКБ_СОЮЗ_42-06-1011.pdf",desc:"ФБ ММВБ → АКБ «СОЮЗ», 09.07.2014 № 42-06/1011. О несоответствии облигаций серий БО-01..06; срок устранения нарушений установлен."},
+  {id:"doc_expert",label:"Экспертное заключение",type:"заключение",fresh:.5,folder:"f2014",file:ROOT+"/2014_внесение_изменений/Экспертное_заключение_210-ФЗ_15072014.doc",desc:"Экспертное заключение от 15.07.2014 по применению 210-ФЗ к эмиссионным документам облигаций."},
+];
+
+const EDGES=[
+  /* 1102 / КС */
+  ["doc_zapros1102","doc_otvet5273","предшествует"],
+  ["doc_otvet5273","doc_otvet6469","уточняет"],
+  ["doc_zapros1102","1102","ссылается"],
+  ["doc_otvet5273","534p","ссылается"],
+  ["doc_otvet5273","konsotch","ссылается"],
+  ["doc_otvet5273","reshenie2022","ссылается"],
+  ["doc_otvet6469","1102","ссылается"],
+  ["534p","ks","уточняет"],
+  ["ks","konsotch","уточняет"],
+  ["konsotch","az","уточняет"],
+  ["1102","reshenie2022","уточняет"],
+  ["reshenie2022","ko","уточняет"],
+  ["ko","konsotch","противопоставлен"],
+  ["1102","ks","противоречит"],
+  ["doc_vizual","emisdoc","ссылается"],
+  ["1102","39fz","ссылается"],
+  /* 2014 / 210-ФЗ */
+  ["210fz","39fz","уточняет"],
+  ["210fz","st171","предшествует"],
+  ["210fz","st172","предшествует"],
+  ["210fz","predstavitel","предшествует"],
+  ["st171","dosrpogash","уточняет"],
+  ["st172","dosrpogash","уточняет"],
+  ["doc_zapros622","doc_otvet4299","предшествует"],
+  ["doc_zaprossber","doc_otvet6635","предшествует"],
+  ["doc_zapros622","210fz","ссылается"],
+  ["doc_otvet4299","st171","ссылается"],
+  ["doc_otvet4299","vnesizm","ссылается"],
+  ["doc_otvet4299","gk","ссылается"],
+  ["vnesizm","emisdoc","уточняет"],
+  ["doc_otvet6635","ogovorka","ссылается"],
+  ["doc_otvet6635","st171","ссылается"],
+  ["doc_otvet6635","nesost","ссылается"],
+  ["ogovorka","emisdoc","уточняет"],
+  ["doc_zaprossber","standemis","ссылается"],
+  ["standemis","nesost","уточняет"],
+  ["st26","nesost","уточняет"],
+  ["39fz","st26","ссылается"],
+  ["nesost","doc_uved_soyuz","ссылается"],
+  ["doc_uved_soyuz","emisdoc","ссылается"],
+  ["doc_expert","210fz","ссылается"],
+  ["doc_expert","emisdoc","уточняет"],
+];
+
+const QUESTIONS=[
+  {
+    id:"q1",text:"Можно ли включить в котировальные списки облигации банка, не раскрывающего отчётность по Постановлению 1102?",
+    relevant:["doc_zapros1102","doc_otvet5273","doc_otvet6469","1102","534p","ks","konsotch","reshenie2022","ko","az"],
+    newlinks:[["doc_otvet6469","ks"]],
+    paths:[
+      {tag:"A",title:"Через условие листинга",route:["534p","ks","konsotch","az"],
+       why:"Раскрытие консолидированной отчётности с аудиторским заключением — обязательное условие включения в котировальные списки."},
+      {tag:"B",title:"Через позицию ЦБ",route:["doc_zapros1102","doc_otvet5273","doc_otvet6469"],
+       why:"При полном нераскрытии отчётности право по 1102 не действует; Биржа отказывает во включении в КС."},
+      {tag:"C",title:"Через исключения",route:["1102","reshenie2022","konsotch"],
+       why:"Допустимы изъятия по решению Совета директоров ЦБ от 29.12.2022, но не полное нераскрытие."},
+    ],
+    why:{
+      doc_otvet5273:"Прямой ответ ЦБ: листинг только при раскрытии отчётности с АЗ.",
+      doc_otvet6469:"Уточняет: полностью не раскрывать 1102 не позволяет.",
+      doc_zapros1102:"Исходный вопрос Биржи, с которого начался кейс.",
+      "1102":"Источник права на изъятия — но не на полное нераскрытие.",
+      "534p":"Задаёт само условие листинга.",
+      ks:"Предмет вопроса — допуск в котировальные списки.",
+      konsotch:"То, что эмитент обязан раскрыть для листинга.",
+      reshenie2022:"Определяет допустимый объём изъятий.",
+      ko:"Категория эмитента, к которой относится вопрос.",
+      az:"Без аудиторского заключения отчётность не считается раскрытой.",
+    }
+  },
+  {
+    id:"q2",text:"Нужно ли вносить изменения в эмиссионные документы облигаций, выпущенных до 01.07.2014, из-за 210-ФЗ?",
+    relevant:["doc_zapros622","doc_otvet4299","doc_zaprossber","doc_otvet6635","doc_expert","210fz","39fz","st171","emisdoc","vnesizm","ogovorka","dosrpogash"],
+    newlinks:[["doc_otvet6635","vnesizm"]],
+    paths:[
+      {tag:"A",title:"Через действие во времени",route:["210fz","39fz","st171","dosrpogash"],
+       why:"Статьи 17.1/17.2 применяются к правам, возникающим после 01.07.2014, независимо от указания в эмиссионных документах."},
+      {tag:"B",title:"Через позицию ЦБ (2014)",route:["doc_zapros622","doc_otvet4299","vnesizm"],
+       why:"Для облигаций, размещённых до 01.07.2014, изменения в части досрочного погашения в силу закона не требуются."},
+      {tag:"C",title:"Через оговорку в ЭД",route:["doc_zaprossber","doc_otvet6635","ogovorka"],
+       why:"Оговорка «с учётом изменений законодательства» обеспечивает соответствие новым нормам."},
+    ],
+    why:{
+      doc_otvet4299:"Прямой ответ ЦБ: вносить изменения не требуется.",
+      doc_otvet6635:"Подтверждает достаточность оговорки в ЭД.",
+      doc_zapros622:"Запрос Биржи, поставивший вопрос.",
+      doc_zaprossber:"Параллельное обращение с теми же выводами.",
+      "210fz":"Закон, породивший вопрос.",
+      st171:"Норма о досрочном погашении в силу закона.",
+      vnesizm:"Сам предмет вопроса.",
+      ogovorka:"Альтернатива внесению изменений.",
+      dosrpogash:"Ключевой механизм, применяемый независимо от ЭД.",
+      emisdoc:"Документы, которые потенциально надо править.",
+    }
+  },
+  {
+    id:"q3",text:"В каких случаях выпуск биржевых облигаций признаётся несостоявшимся?",
+    relevant:["doc_zaprossber","doc_otvet6635","st26","nesost","standemis","emisdoc","doc_uved_soyuz"],
+    newlinks:[["standemis","st26"]],
+    paths:[
+      {tag:"A",title:"Через статью 26 39-ФЗ",route:["39fz","st26","nesost"],
+       why:"Основания признания выпуска несостоявшимся установлены пунктом 4 статьи 26 Закона о РЦБ."},
+      {tag:"B",title:"Через Стандарты эмиссии",route:["standemis","nesost","doc_otvet6635"],
+       why:"Пункт 7.9.4.6: нарушения до размещения, недостоверная информация, неразмещение ни одной облигации."},
+    ],
+    why:{
+      st26:"Базовое основание в законе.",
+      nesost:"Сам институт, о котором вопрос.",
+      standemis:"Детализирует основания на уровне Стандартов.",
+      doc_otvet6635:"Разъяснение ЦБ по стадиям и основаниям.",
+      doc_zaprossber:"Обращение, поставившее вопрос.",
+      emisdoc:"Недостоверность в этих документах — одно из оснований.",
+      doc_uved_soyuz:"Реальный пример уведомления о несоответствии.",
+    }
+  },
+  {
+    id:"q4",text:"Зачем нужно аудиторское заключение при включении в котировальные списки?",
+    relevant:["az","konsotch","534p","ks","doc_otvet5273"],
+    newlinks:[],
+    paths:[
+      {tag:"A",title:"Через достоверность отчётности",route:["konsotch","az","ks"],
+       why:"Аудиторское заключение подтверждает достоверность отчётности; без него она не считается раскрытой для листинга."},
+      {tag:"B",title:"Через позицию ЦБ",route:["doc_otvet5273","konsotch","az"],
+       why:"ЦБ требует приложения аудиторского заключения к раскрываемой отчётности."},
+    ],
+    why:{
+      az:"Предмет вопроса — роль аудиторского заключения.",
+      konsotch:"Отчётность, достоверность которой подтверждает АЗ.",
+      "534p":"Устанавливает требование о приложении АЗ.",
+      ks:"Цель — допуск в котировальные списки.",
+      doc_otvet5273:"Позиция ЦБ о необходимости АЗ.",
+    }
+  },
+  {
+    id:"q5",text:"Что произошло с облигациями АКБ «СОЮЗ»?",
+    relevant:["doc_uved_soyuz","nesost","st26","emisdoc","210fz","st171"],
+    newlinks:[["doc_uved_soyuz","st171"]],
+    paths:[
+      {tag:"A",title:"Хроника кейса",route:["210fz","doc_uved_soyuz","nesost"],
+       why:"После вступления 210-ФЗ Биржа уведомила эмитента о несоответствии облигаций серий БО-01..06 и установила срок устранения."},
+      {tag:"B",title:"Через основание",route:["doc_uved_soyuz","emisdoc","st26"],
+       why:"Несоответствие эмиссионных документов связано с рисками по основаниям статьи 26."},
+    ],
+    why:{
+      doc_uved_soyuz:"Само уведомление о несоответствии — центр кейса.",
+      nesost:"Риск, к которому ведёт несоответствие.",
+      st26:"Правовое основание возможных последствий.",
+      emisdoc:"Документы, признанные несоответствующими.",
+      "210fz":"Закон, после которого возникло несоответствие.",
+      st171:"Норма, которой не соответствовали условия выпуска.",
+    }
+  },
+];
+
+const FOLDERS={f1102:"1102 · кредитные в КС",f2014:"2014 · внесение изменений"};
+
+/* ===================== дальше — движок карты ===================== */
+const N=Object.fromEntries(NODES.map(n=>[n.id,n]));
+const adj={};NODES.forEach(n=>adj[n.id]=[]);
+EDGES.forEach(([a,b,r])=>{adj[a].push({to:b,rel:r});adj[b].push({to:a,rel:r});});
+
+function lcg(seed){let s=seed>>>0;return()=>((s=(s*1664525+1013904223)>>>0)/4294967296);}
+const rnd=lcg(11);
+const W=940,H=680;
+NODES.forEach(n=>{n.x=130+rnd()*(W-260);n.y=95+rnd()*(H-190);n.vx=0;n.vy=0;});
+
+(function settle(){
+  const K_rep=2700,K_spr=.035,L=130,K_ctr=.011,K_fold=.02;
+  for(let it=0;it<460;it++){
+    // притяжение внутри папки
+    const cen={};
+    NODES.forEach(n=>{(cen[n.folder]=cen[n.folder]||{x:0,y:0,c:0});cen[n.folder].x+=n.x;cen[n.folder].y+=n.y;cen[n.folder].c++;});
+    for(const f in cen){cen[f].x/=cen[f].c;cen[f].y/=cen[f].c;}
+    for(let i=0;i<NODES.length;i++){
+      const a=NODES[i];
+      for(let j=i+1;j<NODES.length;j++){
+        const b=NODES[j];
+        let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy||.01,d=Math.sqrt(d2);
+        const f=K_rep/d2,fx=f*dx/d,fy=f*dy/d;
+        a.vx+=fx;a.vy+=fy;b.vx-=fx;b.vy-=fy;
+      }
+    }
+    EDGES.forEach(([ai,bi])=>{
+      const a=N[ai],b=N[bi];
+      let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)||.01;
+      const f=K_spr*(d-L),fx=f*dx/d,fy=f*dy/d;
+      a.vx+=fx;a.vy+=fy;b.vx-=fx;b.vy-=fy;
+    });
+    NODES.forEach(n=>{
+      const c=cen[n.folder];
+      n.vx+=(c.x-n.x)*K_fold+(W/2-n.x)*K_ctr;
+      n.vy+=(c.y-n.y)*K_fold+(H/2-n.y)*K_ctr;
+      n.vx*=.82;n.vy*=.82;n.x+=n.vx;n.y+=n.vy;
+      n.x=Math.max(75,Math.min(W-75,n.x));n.y=Math.max(64,Math.min(H-54,n.y));
+    });
+  }
+})();
+
+const SVGNS="http://www.w3.org/2000/svg";
+const atlas=document.getElementById("atlas");
+const gRegion=document.createElementNS(SVGNS,"g");
+const gEdges=document.createElementNS(SVGNS,"g");
+const gNodes=document.createElementNS(SVGNS,"g");
+atlas.append(gRegion,gEdges,gNodes);
+
+/* регионы-папки */
+Object.entries(FOLDERS).forEach(([f,label])=>{
+  const ns=NODES.filter(n=>n.folder===f);
+  if(ns.length<3)return;
+  const xs=ns.map(n=>n.x),ys=ns.map(n=>n.y);
+  const cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2;
+  const rx=(Math.max(...xs)-Math.min(...xs))/2+58,ry=(Math.max(...ys)-Math.min(...ys))/2+52;
+  const tint=f==="f1102"?"var(--brass)":"var(--mint)";
+  const e=document.createElementNS(SVGNS,"ellipse");
+  e.setAttribute("class","region");e.setAttribute("cx",cx);e.setAttribute("cy",cy);
+  e.setAttribute("rx",rx);e.setAttribute("ry",ry);
+  e.setAttribute("fill",tint);e.setAttribute("fill-opacity",".035");
+  e.setAttribute("stroke",tint);e.setAttribute("stroke-opacity",".16");
+  e.setAttribute("stroke-dasharray","3 6");
+  const t=document.createElementNS(SVGNS,"text");
+  t.setAttribute("class","regionlabel");t.setAttribute("x",cx);t.setAttribute("y",cy-ry+4);
+  t.textContent=label;
+  gRegion.append(e,t);
+});
+
+const edgeEls=[];
+EDGES.forEach(([a,b,rel])=>{
+  const A=N[a],B=N[b];
+  const p=document.createElementNS(SVGNS,"path");
+  p.setAttribute("d",curve(A,B));
+  p.setAttribute("class","edge"+(rel==="противоречит"?" contra":""));
+  gEdges.appendChild(p);edgeEls.push({el:p,a,b,rel});
+});
+function curve(A,B){
+  const mx=(A.x+B.x)/2,my=(A.y+B.y)/2,dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1;
+  const cx=mx-dy/len*20,cy=my+dx/len*20;
+  return `M${A.x.toFixed(1)} ${A.y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${B.x.toFixed(1)} ${B.y.toFixed(1)}`;
+}
+
+const nodeEls={};
+NODES.forEach(n=>{
+  const g=document.createElementNS(SVGNS,"g");
+  g.setAttribute("class","node");g.setAttribute("transform",`translate(${n.x.toFixed(1)} ${n.y.toFixed(1)})`);
+  const baseR=7+n.fresh*6.5;
+  const halo=document.createElementNS(SVGNS,"circle");halo.setAttribute("class","halo");halo.setAttribute("r",baseR+15);
+  const stale=document.createElementNS(SVGNS,"circle");stale.setAttribute("class","stalering");stale.setAttribute("r",baseR+5);
+  const ring=document.createElementNS(SVGNS,"circle");ring.setAttribute("class","ring");ring.setAttribute("r",baseR+5);
+  const core=document.createElementNS(SVGNS,"circle");core.setAttribute("class","core"+(n.fresh>.82?" twk":""));
+  core.setAttribute("r",baseR);core.setAttribute("fill",starColor(n.fresh));
+  core.setAttribute("stroke","rgba(11,16,48,.6)");core.setAttribute("stroke-width","1.5");
+  if(isDoc(n)){core.setAttribute("stroke",docStroke(n));core.setAttribute("stroke-width","1.8");}
+  const t=document.createElementNS(SVGNS,"text");t.setAttribute("y",baseR+15);t.textContent=n.label;
+  g.append(halo,stale,ring,core,t);
+  if(n.fresh<.45){stale.style.opacity=".5";core.style.filter="saturate(.55)";}
+  gNodes.appendChild(g);
+  nodeEls[n.id]={g,halo,ring,core,t,stale,baseR};
+  g.addEventListener("click",e=>{e.stopPropagation();selectNode(n.id);});
+  enableDrag(g,n);
+});
+function isDoc(n){return ["запрос","ответ","уведомление","заключение","схема"].includes(n.type);}
+function docStroke(n){return n.type==="ответ"?"var(--mint)":n.type==="запрос"?"var(--brass)":"var(--ink-faint)";}
+function starColor(f){const a=Math.round(120+f*135),b=Math.round(130+f*120),c=Math.round(180+f*75);return `rgb(${a},${b},${c})`;}
+
+function enableDrag(g,n){
+  let dragging=false;const pt=atlas.createSVGPoint();
+  const toSvg=ev=>{pt.x=ev.clientX;pt.y=ev.clientY;return pt.matrixTransform(atlas.getScreenCTM().inverse());};
+  g.addEventListener("pointerdown",ev=>{dragging=true;g.setPointerCapture(ev.pointerId);});
+  g.addEventListener("pointermove",ev=>{if(!dragging)return;const p=toSvg(ev);n.x=p.x;n.y=p.y;g.setAttribute("transform",`translate(${n.x.toFixed(1)} ${n.y.toFixed(1)})`);updEdges(n.id);});
+  g.addEventListener("pointerup",ev=>{dragging=false;g.releasePointerCapture(ev.pointerId);});
+}
+function updEdges(id){edgeEls.forEach(e=>{if(e.a===id||e.b===id)e.el.setAttribute("d",curve(N[e.a],N[e.b]));});}
+
+let active=null,activePath=null,selected=null;
+const key=(a,b)=>[a,b].sort().join("·");
+
+function runQuestion(q){active=q;activePath=null;selected=null;paintGraph();pulseAt(q.relevant);renderPaths();updateCounter();}
+
+function matchFreeText(text){
+  const toks=text.toLowerCase().split(/[^a-zа-яё0-9.]+/).filter(t=>t.length>2);
+  for(const q of QUESTIONS){const qt=q.text.toLowerCase();const hit=toks.filter(t=>qt.includes(t)).length;if(hit>=2||qt.includes(text.toLowerCase().trim()))return q;}
+  const score={};
+  NODES.forEach(n=>{const hay=(n.label+" "+n.desc+" "+n.type).toLowerCase();let s=0;toks.forEach(t=>{if(hay.includes(t))s+=1;});score[n.id]=s;});
+  const ranked=NODES.map(n=>n.id).filter(id=>score[id]>0).sort((a,b)=>score[b]-score[a]);
+  if(!ranked.length)return null;
+  const rel=ranked.slice(0,7);const route=[rel[0]];let cur=rel[0];
+  for(let i=0;i<3;i++){const nb=adj[cur].map(x=>x.to).filter(x=>rel.includes(x)&&!route.includes(x));if(!nb.length)break;nb.sort((a,b)=>score[b]-score[a]);route.push(nb[0]);cur=nb[0];}
+  return {id:"adhoc",text:text.trim(),relevant:rel,newlinks:[],
+    paths:[{tag:"~",title:"Подобранный маршрут",route,why:"Маршрут подобран по совпадению ключевых слов с описаниями страниц. В реальной базе его строит агент по index.md и связям."}],
+    why:Object.fromEntries(rel.map(id=>[id,"Совпадает с темой запроса по описанию страницы."]))};
+}
+
+function paintGraph(){
+  const rel=active?new Set(active.relevant):null;
+  const routeNodes=(active&&activePath!=null)?new Set(active.paths[activePath].route):new Set();
+  const routeEdges=new Set();
+  if(active&&activePath!=null){const r=active.paths[activePath].route;for(let i=0;i<r.length-1;i++)routeEdges.add(key(r[i],r[i+1]));}
+  const newLinks=new Set((active?active.newlinks:[]).map(([a,b])=>key(a,b)));
+  NODES.forEach(n=>{
+    const el=nodeEls[n.id],g=el.g;
+    g.classList.remove("dim","relevant","selected","routenode");el.halo.style.opacity=0;el.ring.style.opacity=0;
+    if(!active){el.halo.style.opacity=Math.max(0,n.fresh-.5)*.45;return;}
+    if(rel.has(n.id)){g.classList.add("relevant");el.halo.style.opacity=.16+n.fresh*.5;el.halo.setAttribute("r",el.baseR+11+n.fresh*9);el.ring.style.opacity=.85;}
+    else g.classList.add("dim");
+    if(routeNodes.has(n.id))g.classList.add("routenode");
+    if(selected===n.id)g.classList.add("selected");
+  });
+  edgeEls.forEach(e=>{
+    e.el.classList.remove("dim","route","newlink");e.el.style.strokeDashoffset="";
+    const k=key(e.a,e.b);if(!active)return;
+    if(routeEdges.has(k)){e.el.classList.add("route");animateDraw(e.el);return;}
+    if(newLinks.has(k)){e.el.classList.add("newlink");return;}
+    if(!(rel.has(e.a)&&rel.has(e.b)))e.el.classList.add("dim");
+  });
+  drawDiscovered(active);
+}
+let discoveredEls=[];
+function drawDiscovered(act){
+  discoveredEls.forEach(el=>el.remove());discoveredEls=[];
+  if(!act)return;
+  act.newlinks.forEach(([a,b])=>{
+    if(edgeEls.some(e=>key(e.a,e.b)===key(a,b)))return;
+    const A=N[a],B=N[b],mx=(A.x+B.x)/2,my=(A.y+B.y)/2,dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1;
+    const cx=mx-dy/len*28,cy=my+dx/len*28;
+    const p=document.createElementNS(SVGNS,"path");
+    p.setAttribute("d",`M${A.x} ${A.y} Q${cx} ${cy} ${B.x} ${B.y}`);
+    p.setAttribute("class","edge newlink");gEdges.appendChild(p);discoveredEls.push(p);
+  });
+}
+function animateDraw(path){try{const len=path.getTotalLength();path.style.transition="none";path.style.strokeDasharray=len;path.style.strokeDashoffset=len;path.getBoundingClientRect();path.style.transition="stroke-dashoffset .7s ease";path.style.strokeDashoffset="0";setTimeout(()=>{path.style.strokeDasharray="";},760);}catch(e){}}
+function pulseAt(ids){if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;const xs=ids.map(i=>N[i].x),ys=ids.map(i=>N[i].y);const cx=xs.reduce((a,b)=>a+b,0)/xs.length,cy=ys.reduce((a,b)=>a+b,0)/ys.length;const c=document.createElementNS(SVGNS,"circle");c.setAttribute("class","pulse");c.setAttribute("cx",cx);c.setAttribute("cy",cy);c.setAttribute("r",40);gEdges.appendChild(c);setTimeout(()=>c.remove(),1200);}
+
+function updateCounter(){
+  const c=document.getElementById("counter");
+  if(!active){c.classList.remove("show");return;}
+  const nl=active.newlinks.length;
+  c.innerHTML=`<span class="rel">${active.relevant.length} страниц в фокусе</span><br><b>${nl} ${plural(nl,"новая связь","новые связи","новых связей")}</b> найдено`;
+  c.classList.add("show");
+}
+function plural(n,one,few,many){const m=n%100,d=n%10;if(m>=11&&m<=14)return many;if(d===1)return one;if(d>=2&&d<=4)return few;return many;}
+
+const panel=document.getElementById("panel");
+function renderIntro(){
+  active=null;selected=null;activePath=null;
+  panel.innerHTML=`
+    <div class="panel-eyebrow">с чего начать</div>
+    <div class="intro">
+      <h3>Карта вместо поиска</h3>
+      <p>Каждая звезда — страница базы: правовой акт, концепт или документ-первоисточник. Линии — связи между ними. Чем ярче звезда, тем актуальнее страница.</p>
+      <ul class="howto">
+        <li><span class="n">1</span><span>Задайте вопрос или выберите частый — карта подсветит релевантные страницы и папки.</span></li>
+        <li><span class="n">2</span><span>Выберите <b>путь к ответу</b> — между страницами прочертится маршрут рассуждения.</span></li>
+        <li><span class="n">3</span><span>Нажмите на звезду — увидите, <b>почему</b> она в ответе, её связи и ссылку на источник.</span></li>
+      </ul>
+    </div>`;
+}
+function renderPaths(){
+  selected=null;const a=active;
+  panel.innerHTML=`
+    <div class="panel-eyebrow">пути к ответу</div>
+    <div class="qhead">«${esc(a.text)}»</div>
+    <div class="qmeta">${a.paths.length} ${plural(a.paths.length,"маршрут","маршрута","маршрутов")} · ${a.relevant.length} страниц в фокусе</div>
+    <div class="pathlist" id="pathlist"></div>`;
+  const list=document.getElementById("pathlist");
+  a.paths.forEach((p,i)=>{
+    const div=document.createElement("div");div.className="path";div.dataset.i=i;
+    div.innerHTML=`<div class="ptitle"><span class="ptag">${p.tag}</span>${esc(p.title)}</div>
+      <div class="why">${esc(p.why)}</div>
+      <div class="route">${p.route.map((id,j)=>`${j?'<span class="arrow">→</span>':''}<span class="step" data-id="${id}">${esc(N[id].label)}</span>`).join("")}</div>`;
+    div.addEventListener("mouseenter",()=>highlightPath(i));
+    div.addEventListener("click",e=>{if(e.target.classList.contains("step")){selectNode(e.target.dataset.id);return;}highlightPath(i);});
+    list.appendChild(div);
+  });
+  highlightPath(0);
+}
+function highlightPath(i){activePath=i;selected=null;document.querySelectorAll(".path").forEach(p=>p.classList.toggle("active",+p.dataset.i===i));paintGraph();}
+
+function renderDetail(id){
+  const n=N[id],conns=adj[id];
+  const newSet=new Set((active?active.newlinks:[]).map(([a,b])=>key(a,b)));
+  const whyCtx=active&&active.why&&active.why[id];
+  const freshPct=Math.round(n.fresh*100);
+  const freshLbl=n.fresh>.8?"свежая":n.fresh>.5?"актуальная":n.fresh>.35?"стоит сверить":"устаревает";
+  const folderLbl=FOLDERS[n.folder]||"Аудиторы · АЗ";
+  panel.innerHTML=`
+    <button class="backbtn" id="back">${active?'← к путям к ответу':'← к началу'}</button>
+    <span class="typebadge">${dotFor(n)}${esc(n.type)} · ${esc(folderLbl)}</span>
+    <div class="detail">
+      <h3>${esc(n.label)}</h3>
+      <div class="block">
+        <div class="h">${whyCtx?'почему в ответе':'роль страницы'}</div>
+        <p class="${whyCtx?'why-ctx':''}">${esc(whyCtx||n.desc)}</p>
+        ${whyCtx?`<p style="color:var(--ink-dim);font-size:13px;margin-top:9px">${esc(n.desc)}</p>`:''}
+      </div>
+      <div class="block">
+        <div class="h">актуальность</div>
+        <div class="meter"><i style="width:${freshPct}%"></i></div>
+        <div class="meterrow"><span>${freshLbl}</span><span>${freshPct}/100</span></div>
+      </div>
+      <div class="block">
+        <div class="h">связи · ${conns.length}</div>
+        <div class="links">${conns.map(c=>{
+          const isNew=newSet.has(key(id,c.to)),isContra=c.rel==="противоречит";
+          return `<div class="lnk ${isNew?'isnew':''} ${isContra?'iscontra':''}" data-id="${c.to}">
+            <span class="rel">${esc(c.rel)}</span><span class="nm">${esc(N[c.to].label)}</span>${isNew?'<span class="new">новая</span>':''}</div>`;
+        }).join("")}</div>
+      </div>
+    </div>
+    <div class="source">
+      <div class="block" style="margin-top:0">
+        <div class="h">источник</div>
+        <button class="filebtn" id="filebtn" title="Скопировать путь">
+          <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/></svg></span>
+          <span class="path">${esc(n.file)}</span>
+          <span class="ic" id="copyic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></span>
+        </button>
+        <div class="filenote">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <span>Открывается в локальном хранилище. Содержимое здесь не отображается и не передаётся.</span>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById("back").addEventListener("click",()=>{selected=null;if(active)renderPaths();else{renderIntro();}paintGraph();});
+  panel.querySelectorAll(".lnk").forEach(l=>l.addEventListener("click",()=>selectNode(l.dataset.id)));
+  const fb=document.getElementById("filebtn");
+  fb.addEventListener("click",()=>{const ic=document.getElementById("copyic");navigator.clipboard&&navigator.clipboard.writeText(n.file).catch(()=>{});ic.classList.add("copied");ic.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>';setTimeout(()=>{ic.classList.remove("copied");ic.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';},1400);});
+}
+function dotFor(n){const col=n.fresh>.7?'var(--mint)':n.fresh>.45?'var(--brass)':'var(--coral)';return `<i class="dot" style="width:8px;height:8px;background:${col}"></i>`;}
+function selectNode(id){selected=id;paintGraph();Object.values(nodeEls).forEach(e=>e.g.classList.remove("selected"));nodeEls[id].g.classList.add("selected");if(nodeEls[id].g.classList.contains("dim")){nodeEls[id].g.classList.remove("dim");nodeEls[id].halo.style.opacity=.4;}renderDetail(id);}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+const chips=document.getElementById("chips");
+QUESTIONS.forEach(q=>{
+  const b=document.createElement("button");b.className="chip";b.dataset.id=q.id;
+  b.textContent=q.text.length>54?q.text.slice(0,52)+"…":q.text;b.title=q.text;
+  b.addEventListener("click",()=>{document.getElementById("q").value="";document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",c.dataset.id===q.id));runQuestion(q);});
+  chips.appendChild(b);
+});
+function doAsk(){
+  const v=document.getElementById("q").value.trim();
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));
+  if(!v){renderIntro();active=null;paintGraph();updateCounter();return;}
+  const q=matchFreeText(v);
+  if(!q){panel.innerHTML=`<div class="panel-eyebrow">ничего не нашлось</div><div class="intro"><h3>Карта молчит</h3><p>По этому запросу не нашлось страниц. Попробуйте иначе или выберите частый вопрос.</p></div>`;active=null;paintGraph();updateCounter();return;}
+  if(q.id!=="adhoc")document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",c.dataset.id===q.id));
+  runQuestion(q);
+}
+document.getElementById("ask").addEventListener("click",doAsk);
+document.getElementById("q").addEventListener("keydown",e=>{if(e.key==="Enter")doAsk();});
+document.getElementById("reset").addEventListener("click",()=>{document.getElementById("q").value="";document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));renderIntro();paintGraph();updateCounter();});
+atlas.addEventListener("click",()=>{if(selected){selected=null;if(active)renderPaths();else renderIntro();paintGraph();}});
+
+renderIntro();paintGraph();
+</script>
